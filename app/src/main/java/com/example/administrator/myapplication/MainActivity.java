@@ -1,0 +1,155 @@
+package com.example.administrator.myapplication;
+
+import android.content.Intent;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+
+public class MainActivity extends ActionBarActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+
+    Button AddPerson;
+    Button GoOn;
+
+    EditText iNameOfPerson;
+    EditText iStat1OfPerson;
+
+    TextView oNameOfPerson;
+    TextView oStat1OfPerson;
+
+    Spinner PersonSpinner;
+
+    ArrayList<String> course;
+
+    HashMap<String, person> holder;
+    person p1;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        p1 = new person();
+        p1.name = "Hi there";
+        p1.stat1 = "-1";
+
+        course = new ArrayList<String>();
+        course.add("Hi there");
+        course.add("Bob");
+
+        holder = new HashMap<String, person>();
+        holder.put("Hi there", p1);
+
+        AddPerson = (Button) findViewById(R.id.AddPerson);
+        AddPerson.setOnClickListener(this);
+
+        GoOn = (Button) findViewById(R.id.GoOn);
+        GoOn.setOnClickListener(this);
+
+        iNameOfPerson = (EditText) findViewById(R.id.iNameOfPerson);
+        iStat1OfPerson = (EditText) findViewById(R.id.iStat1OfPerson);
+
+        oNameOfPerson = (TextView) findViewById(R.id.oNameOfPerson);
+        oStat1OfPerson = (TextView) findViewById(R.id.oStat1OfPerson);
+
+        PersonSpinner = (Spinner) findViewById(R.id.PersonSpinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, course);
+        PersonSpinner.setAdapter(adapter);
+        PersonSpinner.setOnItemSelectedListener(this);
+
+
+
+
+    }
+
+
+    @Override
+    public void onClick(View v) {
+
+        if(v == AddPerson)
+        {
+            person pTemp = new person();
+            pTemp.name = iNameOfPerson.getText().toString();
+            pTemp.stat1 = iStat1OfPerson.getText().toString();
+
+            holder.put(iNameOfPerson.getText().toString(),pTemp);
+
+            course.add(iNameOfPerson.getText().toString());
+
+        }
+
+        if(v == GoOn)
+        {
+
+            Intent intent = new Intent(this,MainActivity2Activity.class);
+
+            intent.putExtra("testing", "this is my string");
+
+            intent.putExtra("person",p1);
+
+            intent.putExtra("table",holder);
+
+            startActivityForResult(intent, 100);
+
+        }
+
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 100)
+        {
+
+            if(resultCode == 1)
+            {
+
+                String a = data.getStringExtra("go back");
+                oNameOfPerson.setText(a);
+
+            }
+
+        }
+
+
+    }
+
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        if(view == PersonSpinner)
+        {
+
+            person pTemp = holder.get(PersonSpinner.getSelectedItem().toString());
+            oNameOfPerson.setText(pTemp.name);
+            oStat1OfPerson.setText(pTemp.stat1);
+
+
+        }
+
+    }
+
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+}//end of main
